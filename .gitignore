@@ -1,0 +1,5 @@
+volumes/
+*.war
+*.apk
+.env
+ROOT.xml
