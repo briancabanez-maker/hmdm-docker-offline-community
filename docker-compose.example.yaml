@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: hmdm
+      POSTGRES_USER: hmdm
+      POSTGRES_PASSWORD: CHANGE_ME
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+  hmdm:
+    image: headwindmdm/hmdm:0.1.8
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+      - "31000:31000"
+    environment:
+      SQL_HOST: postgres
+      SQL_BASE: hmdm
+      SQL_USER: hmdm
+      SQL_PASS: CHANGE_ME
+      BASE_DOMAIN: mdm.example.com
+      ADMIN_EMAIL: admin@example.com
+      PROTOCOL: http
+      # Only the file name matters: it must match the WAR you place in volumes/work/cache/
+      HMDM_URL: https://example.invalid/hmdm-5.39.2-os.war
+    volumes:
+      - ./volumes/work:/usr/local/tomcat/work
+      - ./volumes/hmdm-config:/usr/local/tomcat/conf/Catalina/localhost
+    restart: unless-stopped
